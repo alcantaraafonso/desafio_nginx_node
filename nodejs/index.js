@@ -25,17 +25,45 @@ const config = {
     host: 'db',
     user: 'root',
     password: 'root',
-    database: 'nodedb'
+    database: 'node_db'
 }
 
-inserir = () => {
+function createNodeDb() {
+
+    connection = mysql.createConnection(config);
+    sqlInsert = `CREATE TABLE IF NOT EXISTS people(
+        ID int NOT NULL AUTO_INCREMENT PRIMARY KEY,
+        name VARCHAR(255)) `;
+
+    promise = new Promise((resolve, reject) => {
+        connection.query(sqlInsert,
+            (err, result) => {
+                return err ? reject(err) : resolve(result);
+            }
+        );
+    });
+
+    connection.end();
+
+    return promise;
+}
+
+function inserir() {
     ramdomName = Math.floor(Math.random() * names.length);
     connection = mysql.createConnection(config);
     sqlInsert = `INSERT INTO people(name) values ('${names[ramdomName].name}')`;
 
-    connection.query(sqlInsert);
+    promise = new Promise((resolve, reject) => {
+        connection.query(sqlInsert,
+            (err, result) => {
+                return err ? reject(err) : resolve(result);
+            }
+        );
+    });
 
     connection.end();
+
+    return promise;
 }
 
 function getNames() {
@@ -59,7 +87,9 @@ function getNames() {
 
 app.get('/', async (req, res) => {
 
-    inserir();
+    await createNodeDb();
+
+    await inserir();
 
     text = '<h1>Full Cycle Rocks!</h1>';
     text += '<br><br>';

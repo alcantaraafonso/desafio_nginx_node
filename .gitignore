@@ -20,3 +20,4 @@ trash
 
 #mysql volumes
 mysql/
+mysql_db/
