@@ -1,7 +1,5 @@
 FROM node:latest
 
-WORKDIR /usr/src/app
-
 RUN apt-get update && apt-get install -y wget
 
 ENV DOCKERIZE_VERSION v0.6.1
@@ -10,10 +8,10 @@ RUN wget https://github.com/jwilder/dockerize/releases/download/$DOCKERIZE_VERSI
     && rm dockerize-linux-amd64-$DOCKERIZE_VERSION.tar.gz
 EXPOSE 3000
 
-COPY ./package*.json /usr/src/app/
-
-COPY ./*.js /usr/src/app/
-
+WORKDIR /usr/app
+COPY ./ /usr/app
 RUN npm install
+
+COPY . /usr/src/app/
 
 # CMD ["npm", "start"]
